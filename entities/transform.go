@@ -18,7 +18,7 @@ func (g *Transform) SetPosition(x, y float64) {
 }
 
 func (g *Transform) SetRotation(degree float64) {
-	g.Rotation.SetRotation((math.Mod(degree, 359)) * rotations.HalfCircleRadians)
+	g.Rotation.SetRotation((math.Mod(degree, 359)) * rotations.Angle2Radians)
 }
 
 func (g *Transform) Bounds() image.Rectangle {
