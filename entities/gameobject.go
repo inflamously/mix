@@ -5,12 +5,34 @@ import (
 	"mix/vectors"
 )
 
+type Updater interface {
+	Update() error
+}
+
+type Initializer interface {
+	Initialize() error
+}
+
+type Renderer interface {
+	Draw(screen *ebiten.Image) error
+}
+
+type AbstractGameObjecter interface {
+	Initializer
+	Updater
+	Renderer
+}
+
 type GameObject struct {
 	texture   *ebiten.Image
 	draw      *ebiten.DrawImageOptions
 	Lifecycle *GameObjectLifecycle
 	Transform *Transform
 	Data      State
+}
+
+func (g *GameObject) Initialize() error {
+	return nil
 }
 
 func (g *GameObject) Update() error {
@@ -31,13 +53,23 @@ func (g *GameObject) Draw(screen *ebiten.Image) error {
 		err = g.Lifecycle.HookDraw(g, screen)
 	}
 
+	// Reset to initials
 	g.draw.GeoM.Reset()
+
+	// Prepare rotation
+	g.rotateAroundCenter()
+
+	// Translate to position
 	g.draw.GeoM.Translate(g.Transform.Position.X, g.Transform.Position.Y)
-	g.draw.GeoM.Translate(-48, -48)
-	g.draw.GeoM.Rotate(g.Transform.Rotation.Angle())
-	g.draw.GeoM.Translate(48, 48)
 
 	return err
+}
+
+func (g *GameObject) rotateAroundCenter() {
+	bounds := g.Transform.Bounds().Size()
+	g.draw.GeoM.Translate(float64(-bounds.X/2), float64(-bounds.Y/2))
+	g.draw.GeoM.Rotate(g.Transform.Rotation.Angle())
+	g.draw.GeoM.Translate(float64(bounds.X/2), float64(bounds.Y/2))
 }
 
 func New(texture *ebiten.Image, data State, lifecycle *GameObjectLifecycle) *GameObject {
