@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	"image"
-	"image/color"
 	"log"
 	"mix/entities"
 	"mix/entities/complex_entities"
@@ -18,10 +16,10 @@ type Screen struct {
 type Game struct {
 	Initialized bool
 	Screen      Screen
-	GameObjects map[string]entities.AbstractGameObjecter
+	GameObjects map[string]entities.AbstractGameObject
 }
 
-func (g *Game) registerGameObjects() map[string]entities.AbstractGameObjecter {
+func (g *Game) registerGameObjects() map[string]entities.AbstractGameObject {
 	//img, err := resources.LoadImage("./assets/cube.png")
 	//if err != nil {
 	//	return
@@ -48,35 +46,35 @@ func (g *Game) registerGameObjects() map[string]entities.AbstractGameObjecter {
 
 	//g.GameObjects = append(g.GameObjects, cube)
 
-	img := ebiten.NewImage(128, 128)
-	blue := color.RGBA{
-		R: 255,
-		G: 0,
-		B: 255,
-		A: 255,
-	}
+	//img := ebiten.NewImage(128, 128)
+	//blue := color.RGBA{
+	//	R: 255,
+	//	G: 0,
+	//	B: 255,
+	//	A: 255,
+	//}
 
-	points := [][]float32{
-		{64 / 2, 0},
-		{0, 64},
-		{64, 64},
-	}
-
-	vector.DrawFilledRect(img, points[0][0], points[0][1], 2, 2, blue, true)
-	vector.DrawFilledRect(img, points[1][0], points[1][1], 2, 2, blue, true)
-	vector.DrawFilledRect(img, points[2][0], points[2][1], 2, 2, blue, true)
-	triangle := entities.New(img, entities.State{}, &entities.GameObjectLifecycle{
-		HookUpdate: nil,
-		HookDraw:   nil,
-	})
-	triangle.Transform.SetPosition(float64(g.Screen.Size.X/2)-64, float64(g.Screen.Size.Y/2)-64)
+	//points := [][]float32{
+	//	{64 / 2, 0},
+	//	{0, 64},
+	//	{64, 64},
+	//}
+	//
+	//vector.DrawFilledRect(img, points[0][0], points[0][1], 2, 2, blue, true)
+	//vector.DrawFilledRect(img, points[1][0], points[1][1], 2, 2, blue, true)
+	//vector.DrawFilledRect(img, points[2][0], points[2][1], 2, 2, blue, true)
+	//triangle := entities.New(img, entities.State{}, &entities.GameObjectLifecycle{
+	//	HookUpdate: nil,
+	//	HookDraw:   nil,
+	//})
+	//triangle.Transform.SetPosition(float64(g.Screen.Size.X/2)-64, float64(g.Screen.Size.Y/2)-64)
 
 	nTriangle := complex_entities.Triangle{
 		State: entities.State{},
 	}
 
-	return map[string]entities.AbstractGameObjecter{
-		"triangle":  triangle,
+	return map[string]entities.AbstractGameObject{
+		//"triangle":  triangle,
 		"nTriangle": &nTriangle,
 	}
 }
@@ -107,7 +105,7 @@ func (g *Game) Update() error {
 
 	for i := range g.GameObjects {
 		gameObject := g.GameObjects[i]
-		err := gameObject.Update()
+		err := gameObject.Update(g)
 		if err != nil {
 			fmt.Println(err)
 		}

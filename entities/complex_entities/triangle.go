@@ -6,15 +6,18 @@ package complex_entities
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"image"
 	"mix/entities"
+	"mix/render"
 )
 
 type TriangleState struct {
+	image  *ebiten.Image
 	points [][]float64
 }
 
 type Triangle struct {
-	entities.AbstractGameObjecter
+	entities.AbstractGameObject
 	Lifecycle entities.GameObjectLifecycle
 	State     entities.State
 }
@@ -28,13 +31,27 @@ func (t *Triangle) Initialize() error {
 		},
 	}
 
+	state := t.GetState()
+	state.image = ebiten.NewImage(128, 128)
+
+	render.DrawRectangle(state.image, image.Rectangle{
+		Min: image.Point{0, 0},
+		Max: image.Point{1, 1},
+	}, render.ColorPalette[render.COLOR_BLUE])
+
 	return nil
 }
 
-func (t *Triangle) Update() error {
-	return t.Lifecycle.HookUpdate(t, 1.0/60)
+func (t *Triangle) GetState() TriangleState {
+	return t.State.Data.(TriangleState)
+}
+
+func (t *Triangle) Update(game ebiten.Game) error {
+	//deltaTime := 1.0 / 60
+
+	return nil
 }
 
 func (t *Triangle) Draw(screen *ebiten.Image) error {
-	return t.Lifecycle.HookDraw(t, screen)
+	return nil
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type Updater interface {
-	Update() error
+	Update(game ebiten.Game) error
 }
 
 type Initializer interface {
@@ -17,10 +17,16 @@ type Renderer interface {
 	Draw(screen *ebiten.Image) error
 }
 
-type AbstractGameObjecter interface {
+type StateRetriever interface {
+	// GetState Return your own <state> type.
+	GetState() any
+}
+
+type AbstractGameObject interface {
 	Initializer
 	Updater
 	Renderer
+	StateRetriever
 }
 
 type GameObject struct {
@@ -35,7 +41,7 @@ func (g *GameObject) Initialize() error {
 	return nil
 }
 
-func (g *GameObject) Update() error {
+func (g *GameObject) Update(game ebiten.Game) error {
 	deltaTime := 1.0 / 60
 
 	if g.Lifecycle != nil && g.Lifecycle.HookUpdate != nil {
