@@ -18,12 +18,13 @@ type TriangleState struct {
 
 type Triangle struct {
 	entities.AbstractGameObject
+	entities.StateGetter[TriangleState]
 	Lifecycle entities.GameObjectLifecycle
 	State     entities.State
 }
 
-func (t *Triangle) Initialize() error {
-	t.State.Data = TriangleState{
+func (t *Triangle) Initialize(game entities.GameRunner) error {
+	t.State.Data = &TriangleState{
 		points: [][]float64{
 			{0.0, 0.0},
 			{0.0, 0.0},
@@ -35,23 +36,26 @@ func (t *Triangle) Initialize() error {
 	state.image = ebiten.NewImage(128, 128)
 
 	render.DrawRectangle(state.image, image.Rectangle{
-		Min: image.Point{0, 0},
-		Max: image.Point{1, 1},
+		Min: image.Point{X: 0, Y: 0},
+		Max: image.Point{X: 32, Y: 32},
 	}, render.ColorPalette[render.COLOR_BLUE])
 
 	return nil
 }
 
-func (t *Triangle) GetState() TriangleState {
-	return t.State.Data.(TriangleState)
+func (t *Triangle) GetState() *TriangleState {
+	return t.State.Data.(*TriangleState)
 }
 
-func (t *Triangle) Update(game ebiten.Game) error {
+func (t *Triangle) Update(game entities.GameRunner) error {
 	//deltaTime := 1.0 / 60
 
 	return nil
 }
 
 func (t *Triangle) Draw(screen *ebiten.Image) error {
+
+	screen.DrawImage(t.GetState().image, &ebiten.DrawImageOptions{})
+
 	return nil
 }

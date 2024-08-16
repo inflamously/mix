@@ -5,28 +5,10 @@ import (
 	"mix/vectors"
 )
 
-type Updater interface {
-	Update(game ebiten.Game) error
-}
-
-type Initializer interface {
-	Initialize() error
-}
-
-type Renderer interface {
-	Draw(screen *ebiten.Image) error
-}
-
-type StateRetriever interface {
-	// GetState Return your own <state> type.
-	GetState() any
-}
-
 type AbstractGameObject interface {
 	Initializer
 	Updater
 	Renderer
-	StateRetriever
 }
 
 type GameObject struct {
@@ -34,14 +16,18 @@ type GameObject struct {
 	draw      *ebiten.DrawImageOptions
 	Lifecycle *GameObjectLifecycle
 	Transform *Transform
-	Data      State
+	State     State
 }
 
-func (g *GameObject) Initialize() error {
+func (g *GameObject) GetState() *State {
+	return &g.State
+}
+
+func (g *GameObject) Initialize(game GameRunner) error {
 	return nil
 }
 
-func (g *GameObject) Update(game ebiten.Game) error {
+func (g *GameObject) Update(game GameRunner) error {
 	deltaTime := 1.0 / 60
 
 	if g.Lifecycle != nil && g.Lifecycle.HookUpdate != nil {

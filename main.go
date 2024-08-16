@@ -14,6 +14,7 @@ type Screen struct {
 }
 
 type Game struct {
+	ebiten.Game
 	Initialized bool
 	Screen      Screen
 	GameObjects map[string]entities.AbstractGameObject
@@ -91,7 +92,7 @@ func (g *Game) Initialize() {
 	g.Initialized = true
 	for k := range g.GameObjects {
 		fmt.Printf("initialize gameobject '%v'\n", k)
-		err := g.GameObjects[k].Initialize()
+		err := g.GameObjects[k].Initialize(g)
 		if err != nil {
 			log.Fatal(err)
 		}
