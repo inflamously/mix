@@ -23,11 +23,11 @@ func (g *GameObject) GetState() *State {
 	return &g.State
 }
 
-func (g *GameObject) Initialize(game GameRunner) error {
+func (g *GameObject) Initialize(game GameInstance) error {
 	return nil
 }
 
-func (g *GameObject) Update(game GameRunner) error {
+func (g *GameObject) Update(game GameInstance) error {
 	deltaTime := 1.0 / 60
 
 	if g.Lifecycle != nil && g.Lifecycle.HookUpdate != nil {
@@ -45,13 +45,8 @@ func (g *GameObject) Draw(screen *ebiten.Image) error {
 		err = g.Lifecycle.HookDraw(g, screen)
 	}
 
-	// Reset to initials
 	g.draw.GeoM.Reset()
-
-	// Prepare rotation
 	g.rotateAroundCenter()
-
-	// Translate to position
 	g.draw.GeoM.Translate(g.Transform.Position.X, g.Transform.Position.Y)
 
 	return err

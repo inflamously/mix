@@ -23,7 +23,7 @@ type Triangle struct {
 	State     entities.State
 }
 
-func (t *Triangle) Initialize(game entities.GameRunner) error {
+func (t *Triangle) Initialize(game entities.GameInstance) error {
 	t.State.Data = &TriangleState{
 		points: [][]float64{
 			{0.0, 0.0},
@@ -47,7 +47,7 @@ func (t *Triangle) GetState() *TriangleState {
 	return t.State.Data.(*TriangleState)
 }
 
-func (t *Triangle) Update(game entities.GameRunner) error {
+func (t *Triangle) Update(game entities.GameInstance) error {
 	//deltaTime := 1.0 / 60
 
 	return nil
